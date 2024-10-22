@@ -1,0 +1,52 @@
+@import "leaflet/dist/leaflet.css";
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+
+.map-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.map-container .leaflet-container {
+  height: 600px;
+  width: 800px;
+}
+
+.pin-list {
+  margin-left: 20px;
+  max-width: 300px;
+}
+
+.pin-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.pin-list li {
+  margin-bottom: 15px;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.pin-list li:hover {
+  background-color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .map-container .leaflet-container {
+    height: 400px;
+    width: 100%;
+  }
+  .map-container{
+    display: flex;
+    flex-direction: column;
+  }
+}

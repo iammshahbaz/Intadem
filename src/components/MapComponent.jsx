@@ -3,12 +3,12 @@ import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-lea
 import L from 'leaflet';
 import axios from 'axios';
 
-// Custom hook to move the map to the selected pin
+// move the map to selected pin
 const MapUpdater = ({ selectedPin }) => {
   const map = useMap();
   useEffect(() => {
     if (selectedPin) {
-      map.setView([selectedPin.lat, selectedPin.lng], 13); // Zoom and pan to the selected pin
+      map.setView([selectedPin.lat, selectedPin.lng], 13); // Zoom 
     }
   }, [selectedPin, map]);
   return null;
@@ -18,7 +18,7 @@ const MapComponent = () => {
   const [pins, setPins] = useState(() => JSON.parse(localStorage.getItem('pins')) || []);
   const [selectedPin, setSelectedPin] = useState(null);
 
-  // Function to save pins to local storage
+  //  save pins to local storage
   const savePins = (newPins) => {
     setPins(newPins);
     localStorage.setItem('pins', JSON.stringify(newPins));
@@ -30,12 +30,12 @@ const MapComponent = () => {
         const { lat, lng } = e.latlng;
         const newPin = { lat, lng, remark: '', address: '' };
 
-        // Open a prompt for the user to add remarks
+        //  to add remarks
         const remark = prompt('Enter a remark for this pin:');
         if (remark) {
           newPin.remark = remark;
 
-          // Fetch the address using Nominatim API
+          // fetch address 
           axios
             .get(`https://nominatim.openstreetmap.org/reverse`, {
               params: {
@@ -59,7 +59,7 @@ const MapComponent = () => {
     return null;
   };
 
-  // Click handler to focus the map on the pin location
+  //  focus the map on the pin location
   const handlePinClick = (pin) => {
     setSelectedPin(pin);
   };
@@ -99,7 +99,7 @@ const MapComponent = () => {
         ))}
       </MapContainer>
 
-      {/* Sidebar for listing pins */}
+      {/* Sidebar */}
       <div className="pin-list">
         <h3>Saved Pins:</h3>
         <ul>

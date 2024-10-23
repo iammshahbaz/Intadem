@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import axios from 'axios';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import axios from 'axios';
+
+// Custom hook to move the map to the selected pin
+const MapUpdater = ({ selectedPin }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (selectedPin) {
+      map.setView([selectedPin.lat, selectedPin.lng], 13); // Zoom and pan to the selected pin
+    }
+  }, [selectedPin, map]);
+  return null;
+};
 
 const MapComponent = () => {
   const [pins, setPins] = useState(() => JSON.parse(localStorage.getItem('pins')) || []);
@@ -48,31 +59,52 @@ const MapComponent = () => {
     return null;
   };
 
-  // focus the map on the pin location
+  // Click handler to focus the map on the pin location
   const handlePinClick = (pin) => {
     setSelectedPin(pin);
   };
 
+  // Custom marker icons for default and selected pins
+  const defaultIcon = new L.Icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+  });
+
+  const selectedIcon = new L.Icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+    iconSize: [30, 50],
+    iconAnchor: [15, 50],
+    className: 'highlighted-pin',
+  });
+
   return (
     <div className="map-container">
-      <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: '100vh', width: '80vw' }}>
+      {/* Map Component */}
+      <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: '600px', width: '80vw' }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+
         <PinDropper />
+        <MapUpdater selectedPin={selectedPin} />
 
         {pins.map((pin, idx) => (
-          <Marker key={idx} position={[pin.lat, pin.lng]} />
+          <Marker
+            key={idx}
+            position={[pin.lat, pin.lng]}
+            icon={selectedPin && selectedPin.lat === pin.lat && selectedPin.lng === pin.lng ? selectedIcon : defaultIcon}
+          />
         ))}
       </MapContainer>
 
-      {/* Sidebar */}
+      {/* Sidebar for listing pins */}
       <div className="pin-list">
         <h3>Saved Pins:</h3>
         <ul>
           {pins.map((pin, idx) => (
-            <li key={idx} onClick={() => handlePinClick(pin)}>
+            <li key={idx} onClick={() => handlePinClick(pin)} style={{ cursor: 'pointer' }}>
               <p><strong>Remark:</strong> {pin.remark}</p>
               <p><strong>Address:</strong> {pin.address}</p>
             </li>
